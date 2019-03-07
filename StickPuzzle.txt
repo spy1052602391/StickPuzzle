@@ -1,0 +1,90 @@
+package 每日一题.木棒拼图;
+
+import java.util.Scanner;
+
+
+
+public class Test {
+    static class Node{
+        int control;
+        int longs;
+        Node next;
+
+        public Node(int control, int longs, Node next) {
+            this.control = control;
+            this.longs = longs;
+            this.next = next;
+        }
+
+        public static Node add(Node node, int longs, int control){
+            if(node == null){
+                node = new Node(control,longs,null);
+                return node;
+            }
+            Node head = node;
+            while(node.next != null){
+                node = node.next;
+            }
+            Node newNode = new Node(control,longs,null);
+            node.next = newNode;
+            return head;
+        }
+        public static int remove(Node node,int longs){
+            Node pre = null;
+            while(node.next != null){
+                if(node.longs == longs){
+                    if(pre == null){
+                        return 0;
+                    }
+                    pre = pre.next.next;
+                    break;
+                }
+                pre = node;
+                node = node.next;
+            }
+            return 1;
+        }
+    }
+    public static boolean judge(Node node){
+        int count = 0;
+        int max = 0;
+        while(node!=null){
+            if(node.longs > max){
+                max = node.longs;
+            }
+            count += node.longs;
+            node = node.next;
+        }
+        if(2*max >= count){
+            return false;
+        }
+        return true;
+    }
+    public static void main(String[] args) {
+        Node node = null;
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int control[] =  new int[n];
+        int[] longs =  new int[n];
+        for(int i=0; i<n; i++){
+            control[i] = in.nextInt();
+            longs[i] = in.nextInt();
+        }
+        for(int j=0; j<n; j++){
+            if(control[j] == 1){
+                node = Node.add(node,longs[j],control[j]);
+            }
+            if(control[j] == 2){
+                int res = Node.remove(node,longs[j]);
+                if(res == 0){
+                    node = node.next;
+                }
+            }
+            if(judge(node)){
+                System.out.println("Yes");
+            }else{
+                System.out.println("No");
+            }
+        }
+    }
+}
